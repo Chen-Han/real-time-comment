@@ -43,8 +43,24 @@
 
 
 	function renderUI(videoCommentRef){
-		var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
+		var section = $('<section id="commentBox"> <div class="pic-comments"><a id="cool"><img id="cool_pic"></a></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div></div> </section>');
+    $("#cool_pic").attr("src", chrome.extension.getURL("pics/cool.png"));
+ 
 		$("#watch7-headline").before(section);
+		
+ 		$("#cool").on('click',function(){
+ 		   withCurrTime(function(currTime){
+ 		    console.log(videoCommentRef);
+ 		    videoCommentRef.push({
+ 		      type:"emoji",
+ 		      time:currTime,
+ 		      content:"cool",
+ 		      animation:"float-to-right-end"
+ 		    },function(err){
+ 		      console.log(err);
+ 		    });
+ 		  });
+ 		})
 
 		$("#submitComments").on('click',function(){
 		  var textComment = $("#textComments").val();
@@ -52,8 +68,9 @@
 		  withCurrTime(function(currTime){
 		    console.log(videoCommentRef);
 		    videoCommentRef.push({
+		      type:"text",
 		      time:currTime,
-		      text:textComment,
+		      content:textComment,
 		      animation:"float-to-right-end"
 		    },function(err){
 		      console.log(err);

@@ -24,5 +24,10 @@
   "permissions": [
     "<all_urls>"
     // "activeTab"
-  ]
+  ],
+
+  “web_accessible_resources”: [
+    “pics/*”
+  ],
+
 }
