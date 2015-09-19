@@ -21,6 +21,9 @@ var Timer = React.createClass({
 });
 
 console.log("OMG1");
+var ytplayer = document.getElementById("movie_player");
+ytplayer.getCurrentTime();
+console.log(ytplayer.getCurrentTime());
 
 React.render(<Timer />, document.getElementById("container"));
 
