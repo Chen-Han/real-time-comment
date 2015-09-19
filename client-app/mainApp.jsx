@@ -20,11 +20,10 @@ var Timer = React.createClass({
 	}
 });
 
-console.log("OMG1");
-var ytplayer = document.getElementById("movie_player");
-ytplayer.getCurrentTime();
-console.log(ytplayer.getCurrentTime());
+// console.log("OMG1");
+// var ytplayer = document.getElementById("movie_player");
+// ytplayer.getCurrentTime();
+// console.log(ytplayer.getCurrentTime());
 
-React.render(<Timer />, document.getElementById("container"));
-
-console.log("OMG");
+// React.render(<Timer />, document.getElementById("container"));
+React.render(<Timer />, document.getElementsByClassName("watch-title-container")[0]);
