@@ -23,7 +23,6 @@
 	  console.log("The read failed: " + errorObject.code);
 	});
 
-
 	renderUI(ref);
 
 	var displayer = new Displayer();
