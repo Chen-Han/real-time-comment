@@ -2,3 +2,26 @@
 	z-index: 100;
 	position: absolute;
 }
+
+.comment {
+	position: absolute;
+	left: 0;
+}
+
+.slide-enter {
+  opacity: 0.01;
+}
+
+.slide-enter.slide-enter-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.slide-leave {
+  opacity: 1;
+}
+
+.slide-leave.slide-leave-active {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}

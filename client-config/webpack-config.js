@@ -9,7 +9,7 @@ module.exports = function (options) {
 		main: "./client-app/mainApp"
 	};
 	var loaders = {
-		jsx: options.hotComponents ? ["react-hot-loader", "babel-loader?stage=0"] : "babel-loader?stage=0",
+		jsx: "babel-loader?stage=0",
 		js: {
 			loader: "babel-loader?stage=0",
 			include: path.join(__dirname, "../client-app")

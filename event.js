@@ -8,9 +8,6 @@ var tabWithFrameworks = {};
 function injectedMethod(tab,method,callback){
 
 	if(!tabWithFrameworks[tab.id]){
-		// chrome.tabs.executeScript(tab.id,{
-		// 	file:"jquery.js"
-		// });
 
 		chrome.tabs.insertCSS(tab.id,{
 			file: "build/main.css"
@@ -21,5 +18,11 @@ function injectedMethod(tab,method,callback){
 	chrome.tabs.executeScript(tab.id,{
 		file:"build/main.js"
 	}, callback);
+	// chrome.tabs.executeScript(tab.id, {
+	// 		file:"client-app/firebase/firebase.js"
+	// 	});
+	// 	chrome.tabs.executeScript(tab.id, {
+	// 		file:"client-app/firebase/firebase.js"
+	// 	});
 }
 chrome.browserAction.onClicked.addListener(getBgColors);
