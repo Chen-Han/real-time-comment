@@ -42,10 +42,12 @@
 	// 	});
 	// }
 	respondToOffToggle();
+
 	function respondToOffToggle() {
 		chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 			switch(request){
 				case 'stop_display': 
+				console.log("hello");
 				displayer.turnOff();
 			}
 		});
@@ -72,7 +74,8 @@
 
 	function Displayer(tick){
 		var tick = tick ||  0.2;
-		var canceled = false;
+		this.canceled = false;
+		this.displayHandle = null;
 		var that = this;
 		/*
 			take some comments and start displaying them, 
@@ -84,7 +87,7 @@
 		*/
 		this. startDisplay = function startDisplay(video){
 			
-			canceled = false;
+			that.canceled = false;
 
 			//display all comments from 1 sec ago and now
 			var secAgo = 1;
@@ -94,21 +97,21 @@
 				}));
 				
 			});
-			//continuously display new comments in an interval 
-			(function displayAllInTick(){
 
+			//continuously display new comments in an interval 
+			that.displayHandle = setInterval(function(){
 				withCurrTime(function(currTime){
-					console.log(video.comments);
+					// console.log(video.comments);
 					that.displayComments(
 						_.filter(video.comments,function(i){
 						return ((currTime-tick) < i.time) && (i.time <= currTime);
 					}));
-					if(!canceled){
-						setTimeout(displayAllInTick,tick*1000);
-					}
+					// if(!that.canceled){
+					// 	console.log(that.canceled);
+					// 	setTimeout(displayAllInTick,tick*1000);
+					// }
 				});
-				
-			})();
+			},tick*1000);
 		};
 
 		this.turnOff = function turnOff() {
@@ -122,7 +125,7 @@
 		};
 
 		this.pauseDisplay = function pauseDisplay(){
-			canceled = true;
+			clearInterval(that.displayHandle);
 		};
 
 		/*
