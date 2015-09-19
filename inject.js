@@ -12,7 +12,8 @@
 		comments:[]
 	};
 
-	var ref = new Firebase("https://real-time-comment.firebaseio.com/");
+
+	var ref = new Firebase("https://real-time-comment.firebaseio.com/").child(getVideoId());
 
 	// Attach an asynchronous callback to read the data at our posts reference
 	ref.on("value", function(snapshot) {
@@ -23,7 +24,7 @@
 	});
 
 
-	renderUI();
+	renderUI(ref);
 
 	var displayer = new Displayer();
 
@@ -42,7 +43,7 @@
 	// }
 
 
-	function renderUI(){
+	function renderUI(videoCommentRef){
 		var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
 		$("#watch7-headline").before(section);
 
@@ -50,8 +51,8 @@
 		  var textComment = $("#textComments").val();
 		  $("#textComments").val('');
 		  withCurrTime(function(currTime){
-		    console.log(ref);
-		    ref.push({
+		    console.log(videoCommentRef);
+		    videoCommentRef.push({
 		      time:currTime,
 		      text:textComment,
 		      animation:"float-to-right-end"
@@ -198,6 +199,12 @@
 
 		    return parseFloat(document.body.getAttribute("playTime"));
 		}
+	}
+
+
+	function getVideoId(){
+		return /www.youtube.com\/watch\?v=(.+)/
+		.exec(window.location.href)[1];
 	}
 }());
 

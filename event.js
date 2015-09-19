@@ -1,4 +1,4 @@
-function getBgColors(tab){
+function run(tab){
 	alert("clicked");
 	injectedMethod(tab,'getPlayerTime');
 	// alert("the browser action was clicked!");
@@ -9,20 +9,20 @@ function injectedMethod(tab,method,callback){
 
 	if(!tabWithFrameworks[tab.id]){
 		chrome.tabs.executeScript(tab.id,{
-			file:"jquery.js"
+			file:"lib/jquery.js"
 		});
 
 		chrome.tabs.executeScript(tab.id,{
-			file:"firebase.js"
+			file:"lib/firebase.js"
 		});
 		
 		chrome.tabs.executeScript(tab.id,{
-			file:"lodash.js"
+			file:"lib/lodash.js"
 		});
 		
 
 		chrome.tabs.insertCSS(tab.id,{
-			file:"bootstrap.css"
+			file:"lib/bootstrap.css"
 		});
 		chrome.tabs.insertCSS(tab.id,{
 			file:"style.css"
@@ -35,4 +35,4 @@ function injectedMethod(tab,method,callback){
 	},callback);	
 	// callback({data:"hello"});
 }
-chrome.browserAction.onClicked.addListener(getBgColors);
+chrome.browserAction.onClicked.addListener(run);
