@@ -1,5 +1,6 @@
 import React from "react";
 import {withCurrentTime} from "YTInterface";
+import {createCommentsContainer} from "YTDOM";
 import "scss/index.scss";
 import Comments from "containers/Comments";
 
@@ -26,14 +27,7 @@ var Timer = React.createClass({
 // React.render(<Timer />, document.getElementById("container"));
 React.render(<Timer />, document.getElementsByClassName("watch-title-container")[0]);
 
-var player = document.getElementsByClassName("html5-video-container")[0];
-
-var container = document.createElement("div");
-container.id = "realtime-comments-container";
-
-player.appendChild(container);
-
-React.render(<Comments />, document.getElementById("realtime-comments-container"));
+React.render(<Comments />, createCommentsContainer());
 
 withCurrentTime(function(time){
 	console.log(time);
