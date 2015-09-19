@@ -10,6 +10,12 @@ function getBgColors(tab){
 
 function injectedMethod(tab,method,callback){
 	chrome.tabs.executeScript(tab.id,{
+		file:"jquery.js"
+	});
+	chrome.tabs.insertCSS(tab.id,{
+		file:"style.css"
+	});
+	chrome.tabs.executeScript(tab.id,{
 		file:"inject.js"
 	},function(){
 		//call back after script executes
@@ -20,6 +26,7 @@ function injectedMethod(tab,method,callback){
 	});
 	// callback({data:"hello"});
 }
+
 
 
 chrome.browserAction.onClicked.addListener(getBgColors);

@@ -43,6 +43,14 @@ var injected = injected || (function(){
 			
 		}
 	}
+/*
+	Even more crazy ideas: 
+		comment for netflx
+		comment for Facebook video, (pull comment from fb)
+		
+*/
+
+
 
 	/*
 		comments: [comment ...]
@@ -51,17 +59,68 @@ var injected = injected || (function(){
 			"time":number 12.365
 		}
 		timeContext: number, in seconds, 
-			display all comments `timeContext` ago on the video
+			display all comments `currTime` ago on the video
 
 		It requires withCurrTime
 	*/
 
-	function displayComments(comments,timeContext){
+	function displayComments(comments,currTime){
+		var toBeDisplayed = comments
 		withCurrTime(function(currTime){
-			var p = $("<p>",{text:comments[0].text,class:"floating-comment"});
+			comments.forEach(function(comment,index){
+				function (displayable){
+					($("#movie_player")).after(displayable);
+					setTimeout(function(){
+						displayable.remove();
+					},5000);
+				}(toDisplayable(comment));
 
-			$("#movie_player").appendChild(p);
-		})
+			});
+		});
 	}
+
+
+	/*
+
+	
+	@return a node to be added corresponding to each comment
+	*/
+	function toDisplayable(comment,currTime){
+
+		return $("<div>",{
+			text:comment.text,
+			class:"floating-comment " + getAnimationClass(comment)
+		}).css(getPos(comment));
+
+		function getAnimationClass(comment,currTime){
+			return comment.animation || "";
+		}
+
+		function getPos(comment,currTime){
+			var pos = {};
+			if(Math.random()>0.5){
+				return {
+					"left":parseInt(Math.floor(Math.random()* 300)) + "px",
+					"top":parseInt(Math.floor(Math.random()* 300)) + "px"
+				};
+			}else{
+				return{
+					"right":parseInt(Math.floor(Math.random()* 300)) + "px",
+					"bottom":parseInt(Math.floor(Math.random()* 300)) + "px"
+				};
+			}
+		}
+	}
+
+	displayComments([{
+		time:0,
+		text:"Hello WOrld!!!",
+		animation:"fade-in"
+	},{
+		time:1,
+		text:"yo yo yo",
+		animation:"floating-right"
+	}]);
+
 	return true;
 }());
