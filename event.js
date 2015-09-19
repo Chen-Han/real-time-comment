@@ -12,9 +12,9 @@ function injectedMethod(tab,method,callback){
 		// 	file:"jquery.js"
 		// });
 
-		// chrome.tabs.insertCSS(tab.id,{
-		// 	file:"bootstrap.css"
-		// });
+		chrome.tabs.insertCSS(tab.id,{
+			file: "build/main.css"
+		});
 
 		tabWithFrameworks[tab.id] = true;
 	}

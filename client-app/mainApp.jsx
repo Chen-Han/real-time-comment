@@ -1,5 +1,7 @@
 import React from "react";
 import {withCurrentTime} from "YTInterface";
+import "scss/index.scss";
+import Comments from "containers/Comments";
 
 var Timer = React.createClass({
 	getInitialState: function() {
@@ -21,13 +23,17 @@ var Timer = React.createClass({
 	}
 });
 
-// console.log("OMG1");
-// var ytplayer = document.getElementById("movie_player");
-// ytplayer.getCurrentTime();
-// console.log(ytplayer.getCurrentTime());
-
 // React.render(<Timer />, document.getElementById("container"));
 React.render(<Timer />, document.getElementsByClassName("watch-title-container")[0]);
+
+var player = document.getElementsByClassName("html5-video-container")[0];
+
+var container = document.createElement("div");
+container.id = "realtime-comments-container";
+
+player.appendChild(container);
+
+React.render(<Comments />, document.getElementById("realtime-comments-container"));
 
 withCurrentTime(function(time){
 	console.log(time);
