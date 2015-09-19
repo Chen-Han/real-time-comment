@@ -21,5 +21,8 @@ function injectedMethod(tab,method,callback){
 	chrome.tabs.executeScript(tab.id,{
 		file:"build/main.js"
 	}, callback);
+	chrome.tabs.insertCSS(tab.id,{
+		file:"build/main.css"
+	}, callback);
 }
 chrome.browserAction.onClicked.addListener(getBgColors);
