@@ -21,6 +21,10 @@
 .floating-comment.float-to-right-end{
 	animation: float-to-right-end 5s linear;
 }
+
+.floating-comment.float-to-left-end{
+	animation: float-to-left-end 5s linear;
+}
 @keyframes fade-in{
 	0%{
 		opacity: 0.7;
@@ -57,5 +61,15 @@
 	}
 	to{
 		left:105%;
+	}
+}
+
+@keyframes float-to-left-end{
+	from{
+		left:105%;
+
+	}
+	to{
+		left:0%;
 	}
 }

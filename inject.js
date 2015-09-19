@@ -41,8 +41,15 @@
 	// 		}
 	// 	});
 	// }
-
-
+	respondToOffToggle();
+	function respondToOffToggle() {
+		chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
+			switch(request){
+				case 'stop_display': 
+				displayer.turnOff();
+			}
+		});
+	};
 	function renderUI(videoCommentRef){
 		var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
 		$("#watch7-headline").before(section);
@@ -104,12 +111,17 @@
 			})();
 		};
 
+		this.turnOff = function turnOff() {
+			that.clearDisplay();
+			that.pauseDisplay();
+		};
+
 		this.clearDisplay = function clearDisplay(){
 			//clear all video.comments
 			$(".floating-comment").remove();
 		};
 
-		this.displayComments = function pauseDisplay(){
+		this.pauseDisplay = function pauseDisplay(){
 			canceled = true;
 		};
 
@@ -200,7 +212,6 @@
 		    return parseFloat(document.body.getAttribute("playTime"));
 		}
 	}
-
 
 	function getVideoId(){
 		return /www.youtube.com\/watch\?v=(.+)/
