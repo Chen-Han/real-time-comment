@@ -1,4 +1,9 @@
-
+/*
+	Even more crazy ideas: 
+		comment for netflx
+		comment for Facebook video, (pull comment from fb)
+		
+*/
 
 var injected = injected || (function(){
 
@@ -13,31 +18,6 @@ var injected = injected || (function(){
 	// 	return true;
 	// });
 
-	function getCurrTime(variables) {
-	    var ret = {};
-
-	    var scriptContent =
-	        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
-
-	    var script = document.createElement('script');
-	    script.id = 'tmpScript';
-	    script.appendChild(document.createTextNode(scriptContent));
-	    (document.body || document.head || document.documentElement).appendChild(script);
-
-	    $("#tmpScript").remove();
-
-	    return parseFloat(document.body.getAttribute("playTime"));
-	}
-	
-	function executeWithWindowVariables(scriptFunc){
-		var element = document.getElementById("tmp");
-		if(element)element.parentNode.removeChild(element);
-		var script = document.createElement('script');
-		script.id="tmp";
-		script.appendChild(document.createTextNode('('+ scriptFunc +')();'));
-		(document.body || document.head || document.documentElement).appendChild(script);
-	}
-
 	/*
 		withCurrTime must be injected to a tab via either content_script or 
 			`chrome.tabs.executeScript`
@@ -46,33 +26,24 @@ var injected = injected || (function(){
 	*/
 	function withCurrTime(callback){
 		callback(getCurrTime());
-		return;
-		document.removeEventListener("currTime");
-		document.addEventListener("currTime",function(e){
-			console.log("Curr time is " + e.detail);
-			callback(e.detail);
-		});
 
-		executeWithWindowVariables(scriptFunc);
-		
-		function scriptFunc(){ //the function to execute inside <script> tag
-			var player = window.yt.player.getPlayerByElement(document.getElementById("player-api"));
+		function getCurrTime(variables) {
+		    var ret = {};
 
-			raiseEvent("currTime",player.getCurrentTime());
-			function raiseEvent(eventName,customData){
-				document.dispatchEvent(new CustomEvent(eventName,{
-					detail:customData
-				}));
-			}
-			
+		    var scriptContent =
+		        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
+
+		    var script = document.createElement('script');
+		    script.id = 'tmpScript';
+		    script.appendChild(document.createTextNode(scriptContent));
+		    (document.body || document.head || document.documentElement).appendChild(script);
+
+		    $("#tmpScript").remove();
+
+		    return parseFloat(document.body.getAttribute("playTime"));
 		}
 	}
-/*
-	Even more crazy ideas: 
-		comment for netflx
-		comment for Facebook video, (pull comment from fb)
-		
-*/
+
 
 
 
@@ -114,41 +85,6 @@ var injected = injected || (function(){
 
 		function getStyleAnimation(comment,currTime){
 			return comment.animation || "";
-			// function getAnimationProg (commentTime,currTime){
-			// 	return (currTime - commentTime)/5;
-			// }
-			// if(!comment.animation){
-			// 	return {};
-			// }
-			// var animationProg = getAnimationProg(comment.time,currTime);
-
-			// switch(comment.animation){
-			// 	case "fade-in":
-			// 		var iniOpacity = 0.7;
-			// 		var iniScale = 0.5;
-			// 		var finalOpacity =1;
-			// 		var finalScale = 1;
-			// 		var duration = 5; //5s
-
-			// 		var calculatedScale = (finalScale - iniScale) * animationProg;
-			// 		return {
-			// 			opacity:(finalOpacity -  iniOpacity)  * animationProg,
-			// 			"-ms-transform": "scale("+calculatedScale+","+calculatedScale+")", /* IE 9 */
-			// 		    "-webkit-transform": "scale("+calculatedScale+","+calculatedScale+")", /* Safari */
-			// 		    "transform": "scale("+calculatedScale+","+calculatedScale+")"
-			// 		}
-			// 	case "floating-right":
-			// 		var iniTransformX = 0;
-			// 		var finalTransformX = 50;
-			// 		var calculatedTransform = Math.floor((finalTransformX - iniTransformX) * animationProg) + "px";
-			// 		return {
-			// 				"-ms-transform": "translate("+calculatedTransform+",0)", /* IE 9 */
-			// 			   	"-webkit-transform": "translate("+calculatedTransform+",0)", /* Safari */
-			// 			    "transform": "translate("+calculatedTransform+",0)",
-			// 		}
-			// 	default:
-			// 	return null;
-			// }
 		}
 
 		function getStylePos(comment,currTime){
@@ -166,13 +102,22 @@ var injected = injected || (function(){
 			}
 		}
 	}
+	/*
+		take some comments and start displaying them, 
+			we first display all comments that are within 1 sec of curr time
+			next, we go display all comments that are within 1 `tick` ago of curr time 
 
+		Notice that comments CAN BE MODIFIED during displaying
+
+	*/
 	function startDisplay(comments){
 		canceled = false;
+
 		//display all comments from 1 sec ago and now
+		var secAgo = 1;
 		withCurrTime(function(currTime){
 			displayComments(comments.filter(function(i){
-				return ((currTime-1)< i.time ) && (i.time <= currTime); 
+				return ((currTime-secAgo)< i.time ) && (i.time <= currTime); 
 			}));
 			
 		});
@@ -198,7 +143,8 @@ var injected = injected || (function(){
 		canceled = true;
 	}
 	
-	startDisplay([{
+
+	var allComments = [{
 			   time:18,
                text:"Hello WOrld!!!",
                animation:"fade-in"
@@ -218,7 +164,17 @@ var injected = injected || (function(){
 			   time:20,
                text:"Yo man, so cool!",
                animation:"fade-in"
-       }]); 
+       }];
+	startDisplay(allComments); 
+	setTimeout(function(){
+		allComments.push({
+			time:21,
+			text:"new comments pushed to here!!!!",
+			animation:"floating-right"
+		})
+	})
+	
 	setTimeout(pauseDisplay,18000);
+
 	return true;
 }());
