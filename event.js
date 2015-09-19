@@ -1,32 +1,38 @@
 function getBgColors(tab){
 	alert("clicked");
-	injectedMethod(tab,'getPlayerTime',function(response){
-		//response is sent by injected script
-		alert("The response data is  " + response.data );
-		return true;
-	});
+	injectedMethod(tab,'getPlayerTime');
 	// alert("the browser action was clicked!");
 }
+var tabWithFrameworks = {};
 
 function injectedMethod(tab,method,callback){
-	chrome.tabs.executeScript(tab.id,{
-		file:"jquery.js"
-	});
-	chrome.tabs.insertCSS(tab.id,{
-		file:"style.css"
-	});
+
+	if(!tabWithFrameworks[tab.id]){
+		chrome.tabs.executeScript(tab.id,{
+			file:"jquery.js"
+		});
+
+		chrome.tabs.executeScript(tab.id,{
+			file:"firebase.js"
+		});
+		
+		chrome.tabs.executeScript(tab.id,{
+			file:"lodash.js"
+		});
+		
+
+		chrome.tabs.insertCSS(tab.id,{
+			file:"bootstrap.css"
+		});
+		chrome.tabs.insertCSS(tab.id,{
+			file:"style.css"
+		});
+
+		tabWithFrameworks[tab.id] = true;
+	}
 	chrome.tabs.executeScript(tab.id,{
 		file:"inject.js"
-	},function(){
-		//call back after script executes
-		chrome.tabs.sendMessage(tab.id,{
-			method:method
-		},callback);
-		//tell the injected script what to do
-	});
+	},callback);	
 	// callback({data:"hello"});
 }
-
-
-
 chrome.browserAction.onClicked.addListener(getBgColors);

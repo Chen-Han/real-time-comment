@@ -18,3 +18,39 @@
     });
   }, false);
 }, false);*/
+
+
+var ref = new Firebase("https://real-time-comment.firebaseio.com/");
+
+function withCurrTime(callback){
+  var currentTab = chrome.tabs.query({ active: true, currentWindow: true })[0]; 
+
+  (function(tab){
+    // if(!tab)return;
+    console.log(tab);
+    alert(tab);
+    tab.sendMessage(tab.id,GET_CURR_TIME,callback); //callback executed with current time attached
+    // callback(1);
+  }) (currentTab);
+}
+$(document).ready(function(){
+
+
+  $("#submitComments").on('click',function(){
+    var textComment = $("#textComments").val();
+    $("#textComment").val('');
+    withCurrTime(function(currTime){
+      console.log(ref);
+      ref.push({
+        time:currTime,
+        text:textComment,
+        animation:"float-to-right-end"
+      },function(err){
+        console.log(err);
+      });
+
+
+    });
+  })
+
+})
