@@ -1,6 +1,9 @@
 
 
 var injected = injected || (function(){
+
+	var tick = 0.01;
+
 	// chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	// 	var data = {};
 	// 	if(methods.hasOwnProperty(request.method)){
@@ -11,7 +14,10 @@ var injected = injected || (function(){
 	// });
 	
 	function executeWithWindowVariables(scriptFunc){
+		var element = document.getElementById("tmp");
+		if(element)element.parentNode.removeChild(element);
 		var script = document.createElement('script');
+		script.id="tmp";
 		script.appendChild(document.createTextNode('('+ scriptFunc +')();'));
 		(document.body || document.head || document.documentElement).appendChild(script);
 	}
@@ -58,25 +64,21 @@ var injected = injected || (function(){
 			"text":String "the video is fun lol"
 			"time":number 12.365
 		}
-		timeContext: number, in seconds, 
+		currTime: number, in seconds, 
 			display all comments `currTime` ago on the video
 
 		It requires withCurrTime
 	*/
 
 	function displayComments(comments,currTime){
-		var toBeDisplayed = comments
-		withCurrTime(function(currTime){
 			comments.forEach(function(comment,index){
-				function (displayable){
-					($("#movie_player")).after(displayable);
+				(function (node){
+					($("#movie_player")).after(node);
 					setTimeout(function(){
-						displayable.remove();
-					},5000);
-				}(toDisplayable(comment));
-
+						node.remove();
+					},4000);
+				})(asNode(comment));
 			});
-		});
 	}
 
 
@@ -85,18 +87,53 @@ var injected = injected || (function(){
 	
 	@return a node to be added corresponding to each comment
 	*/
-	function toDisplayable(comment,currTime){
+	function asNode(comment,currTime){
 
 		return $("<div>",{
 			text:comment.text,
-			class:"floating-comment " + getAnimationClass(comment)
-		}).css(getPos(comment));
+			class:"floating-comment " + getStyleAnimation(comment)
+		}).css(getStylePos(comment));
 
-		function getAnimationClass(comment,currTime){
+		function getStyleAnimation(comment,currTime){
 			return comment.animation || "";
+			// function getAnimationProg (commentTime,currTime){
+			// 	return (currTime - commentTime)/5;
+			// }
+			// if(!comment.animation){
+			// 	return {};
+			// }
+			// var animationProg = getAnimationProg(comment.time,currTime);
+
+			// switch(comment.animation){
+			// 	case "fade-in":
+			// 		var iniOpacity = 0.7;
+			// 		var iniScale = 0.5;
+			// 		var finalOpacity =1;
+			// 		var finalScale = 1;
+			// 		var duration = 5; //5s
+
+			// 		var calculatedScale = (finalScale - iniScale) * animationProg;
+			// 		return {
+			// 			opacity:(finalOpacity -  iniOpacity)  * animationProg,
+			// 			"-ms-transform": "scale("+calculatedScale+","+calculatedScale+")", /* IE 9 */
+			// 		    "-webkit-transform": "scale("+calculatedScale+","+calculatedScale+")", /* Safari */
+			// 		    "transform": "scale("+calculatedScale+","+calculatedScale+")"
+			// 		}
+			// 	case "floating-right":
+			// 		var iniTransformX = 0;
+			// 		var finalTransformX = 50;
+			// 		var calculatedTransform = Math.floor((finalTransformX - iniTransformX) * animationProg) + "px";
+			// 		return {
+			// 				"-ms-transform": "translate("+calculatedTransform+",0)", /* IE 9 */
+			// 			   	"-webkit-transform": "translate("+calculatedTransform+",0)", /* Safari */
+			// 			    "transform": "translate("+calculatedTransform+",0)",
+			// 		}
+			// 	default:
+			// 	return null;
+			// }
 		}
 
-		function getPos(comment,currTime){
+		function getStylePos(comment,currTime){
 			var pos = {};
 			if(Math.random()>0.5){
 				return {
@@ -112,15 +149,42 @@ var injected = injected || (function(){
 		}
 	}
 
-	displayComments([{
-		time:0,
-		text:"Hello WOrld!!!",
-		animation:"fade-in"
-	},{
-		time:1,
-		text:"yo yo yo",
-		animation:"floating-right"
-	}]);
+	function startDisplay(comments){
+		
+		//display all comments from 1 sec ago and now
+		withCurrTime(function(currTime){
+			displayComments(comments.filter(function(i){
+				return ((currTime-1)< i.time ) && (i.time <= currTime); 
+			}));
+			
+		})
+		//continuously display new comments in an interval 
 
+		return setInterval(function(){
+			withCurrTime(function(currTime){
+				console.log(comments.filter(function(i){
+					return ((currTime-tick) < i.time) && (i.time <= currTime);
+				}));
+			})
+		},tick*1000);
+	}
+	function clearDisplay(){
+		//clear all comments
+		$(".floating-comment").remove();
+	}
+	function pauseDisplay(){
+
+	}
+	
+	var id = startDisplay([{
+			   time:6,
+               text:"Hello WOrld!!!",
+               animation:"fade-in"
+       },{
+               time:2,
+               text:"yo yo yo",
+               animation:"floating-right"
+       }]); 
+	setTimeout(function(){clearInterval(id);},10000);
 	return true;
 }());
