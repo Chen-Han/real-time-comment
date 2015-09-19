@@ -206,6 +206,18 @@ var injected = injected || (function(){
                time:10,
                text:"yo yo yo",
                animation:"floating-right"
+       },{
+			   time:10,
+               text:"LOOOOOL",
+               animation:"fade-in"
+       },{
+			   time:12,
+               text:"Suckkerr!!!",
+               animation:"fade-in"
+       },{
+			   time:20,
+               text:"Yo man, so cool!",
+               animation:"fade-in"
        }]); 
 	setTimeout(pauseDisplay,18000);
 	return true;
