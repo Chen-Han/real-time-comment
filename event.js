@@ -16,13 +16,11 @@ function injectedMethod(tab,method,callback){
 		tabWithFrameworks[tab.id] = true;
 	}
 	chrome.tabs.executeScript(tab.id,{
+		file:"client-app/firebase/firebase.js"
+	}, callback);
+	chrome.tabs.executeScript(tab.id,{
 		file:"build/main.js"
 	}, callback);
-	// chrome.tabs.executeScript(tab.id, {
-	// 		file:"client-app/firebase/firebase.js"
-	// 	});
-	// 	chrome.tabs.executeScript(tab.id, {
-	// 		file:"client-app/firebase/firebase.js"
-	// 	});
+	
 }
 chrome.browserAction.onClicked.addListener(getBgColors);

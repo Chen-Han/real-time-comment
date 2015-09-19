@@ -1,45 +1,59 @@
 import React from "react/addons";
 import {getCurrentTime} from "YTInterface";
 import Comment from "components/Comment";
-// import "firebase/firebase";
-// import "firebase/reactfire.min.js";
 
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var comments = [{time: 1, text: "LOL1"},
-	{time: 2, text: "LOL2"},
-	{time: 3, text: "LOL3"},
-	{time: 4, text: "LOL4"},
-	{time: 5, text: "LOL5"},
-	{time: 6, text: "LOL6"},
-	{time: 7, text: "LOL7"},
-	{time: 8, text: "LOL8"}];
+var comments = {};
+
+function getVideoId(){
+	return /www.youtube.com\/watch\?v=(.+)/
+	.exec(window.location.href)[1];
+}
+
+var ref = new Firebase("https://real-time-comment.firebaseio.com/").child(getVideoId());
 
 var Comments = React.createClass({
-	getInitialState: function() {
-		return {secondsElapsed: 0};
+	getInitialState: function () {
+		return {currentTime: getCurrentTime()};
 	},
-	tick: function () {
-		var secondsElapsed = this.state.secondsElapsed + 1;
-		var commentsTags = [];
-		for (var comment of comments) {
-			if (secondsElapsed === comment.time) {
-				commentsTags.push(<Comment key={comment.time} text={comment.text} />);
+	componentDidMount: function () {
+		this.interval = setInterval(this.tick, 500);
+		// Attach an asynchronous callback to read the data at our posts reference
+		ref.on("value", function (snapshot) {
+			if (!snapshot.val() || snapshot.val()===null) {
+				comments = {};
 			}
-		}
-		this.setState({secondsElapsed: this.state.secondsElapsed + 1, comments: commentsTags});
-	},
-	componentDidMount: function() {
-		this.interval = setInterval(this.tick, 1000);
+			else {
+				comments = snapshot.val();
+			}
+		}, function (errorObject) {
+			console.log("The read failed: " + errorObject.code);
+		});
 	},
 	componentWillUnmount: function() {
 		clearInterval(this.interval);
 	},
+	tick: function () {
+		var currentTime = getCurrentTime();
+		var commentsTags = [];
+		for (var comment in comments) {
+			if (comments.hasOwnProperty(comment)) {
+				if ((currentTime - comments[comment].time)>0 && (currentTime - comments[comment].time)<6) {
+					commentsTags.push(<Comment key={comments[comment].time} text={comments[comment].text} />);
+				}
+			}
+		}
+		this.setState({currentTime: currentTime, comments: commentsTags});
+	},
 	render: function () {
 		return (<div>
+			{JSON.stringify(this.state.items)}
+			<div className="comment-column">
 			<ReactCSSTransitionGroup transitionName="slide">
 				{this.state.comments}
 			</ReactCSSTransitionGroup>
+			</div>
 		</div>);
 	}
 });
