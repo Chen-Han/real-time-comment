@@ -11,6 +11,13 @@
 	overflow: hidden;
 }
 
+.floating-comment {
+    color: #FFFFFF;
+    font-family: "Courier New";
+    font-weight: 900;
+    font-size: 30px;
+}
+
 .floating-comment.fade-in{
 	animation:fade-in 5s linear;
 }
