@@ -1,4 +1,5 @@
 import React from "react";
+import {withCurrentTime} from "YTInterface";
 
 var Timer = React.createClass({
 	getInitialState: function() {
@@ -27,3 +28,7 @@ var Timer = React.createClass({
 
 // React.render(<Timer />, document.getElementById("container"));
 React.render(<Timer />, document.getElementsByClassName("watch-title-container")[0]);
+
+withCurrentTime(function(time){
+	console.log(time);
+});
