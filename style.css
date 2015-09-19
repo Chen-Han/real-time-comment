@@ -6,6 +6,12 @@
 	white-space: nowrap;
 }
 
+.floating-comment.emoji-comment{
+	width:40px;
+	height:40px;
+	background-color: transparent;
+}
+
 #player_api{
 	position:relative;
 	overflow: hidden;

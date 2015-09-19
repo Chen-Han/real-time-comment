@@ -27,7 +27,59 @@
 
 	var displayer = new Displayer();
 
-	displayer.startDisplay(realVideo); 
+	displayer.startDisplay({
+		comments:[{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:1.1
+		},{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:6
+		},{
+			type:"text",
+			content:"looooll ",
+			animation:"float-to-right-end",
+			time:10
+		},{
+			type:"text",
+			content:"lool some comment man !!",
+			animation:"float-to-right-end",
+			time:10
+		},{
+			type:"emoji",
+			content:"emo_cry",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"emoji",
+			content:"rage_dont_care",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"emoji",
+			content:"emo_laugh_tear",
+			animation:"float-to-right-end",
+			time:7
+		},{
+			type:"emoji",
+			content:"emo_cry",
+			animation:"float-to-right-end",
+			time:17
+		},{
+			type:"emoji",
+			content:"rage_wat",
+			animation:"float-to-right-end",
+			time:25
+		}]
+	}); 
 	
 	setTimeout(displayer.pauseDisplay,90000);
 
@@ -84,13 +136,14 @@
 				that.displayComments(_.filter(video.comments,function(i){
 					return ((currTime-secAgo)< i.time ) && (i.time <= currTime); 
 				}));
+
 				
 			});
 			//continuously display new comments in an interval 
 			(function displayAllInTick(){
 
 				withCurrTime(function(currTime){
-					console.log(video.comments);
+					// console.log(video.comments);
 					that.displayComments(
 						_.filter(video.comments,function(i){
 						return ((currTime-tick) < i.time) && (i.time <= currTime);
@@ -108,7 +161,7 @@
 			$(".floating-comment").remove();
 		};
 
-		this.displayComments = function pauseDisplay(){
+		this.pauseDisplay = function pauseDisplay(){
 			canceled = true;
 		};
 
@@ -142,11 +195,30 @@
 		@return a node to be added corresponding to each comment
 		*/
 		function asNode(comment,currTime){
+			switch(comment.type){
+				case "emoji":
+					return $("<img>",{
+						src:getEmojiSrc(comment.content),
+						class:"floating-comment emoji-comment float-to-right-end"
+					})
+						.css(getStylePos(comment));
 
-			return $("<div>",{
-				text:comment.text,
-				class:"floating-comment " + getStyleAnimation(comment)
-			}).css(getStylePos(comment));
+				case "text":
+					return $("<div>",{
+						text:comment.content,
+						class:"floating-comment " + getStyleAnimation(comment)
+					}).css(getStylePos(comment));
+			}
+			
+			function getEmojiSrc(emojiType){
+				if(/^rage_/.test(emojiType)){
+					return chrome.extension.getURL("assets/emojis/rage/" + emojiType + (".png"));
+
+				}else{
+					return chrome.extension.getURL("assets/emojis/emo/" + emojiType + (".jpg"));
+
+				}
+			}
 
 			function getStyleAnimation(comment,currTime){
 				return comment.animation || "";
