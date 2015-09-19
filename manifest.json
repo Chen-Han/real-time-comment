@@ -15,9 +15,10 @@
       "persistent":false
     },
   // "content_scripts":[{
-  //     "matches":["https://www.youtube.com"],
-  //     "css":"style.css",
-  //     "js":["jquery.js"]
+  //     "matches":["*"],
+  //     "css":["style.css"],
+  //     "js":["test.js"],
+  //     // "run_at":"document_end"
   //   }],
   "permissions": [
     "<all_urls>"

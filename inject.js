@@ -2,8 +2,8 @@
 
 var injected = injected || (function(){
 
-	var tick = 0.01;
-
+	var tick = 0.2;
+	var canceled = false;
 	// chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	// 	var data = {};
 	// 	if(methods.hasOwnProperty(request.method)){
@@ -12,6 +12,22 @@ var injected = injected || (function(){
 	// 	sendResponse({data:data});
 	// 	return true;
 	// });
+
+	function getCurrTime(variables) {
+	    var ret = {};
+
+	    var scriptContent =
+	        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
+
+	    var script = document.createElement('script');
+	    script.id = 'tmpScript';
+	    script.appendChild(document.createTextNode(scriptContent));
+	    (document.body || document.head || document.documentElement).appendChild(script);
+
+	    $("#tmpScript").remove();
+
+	    return parseFloat(document.body.getAttribute("playTime"));
+	}
 	
 	function executeWithWindowVariables(scriptFunc){
 		var element = document.getElementById("tmp");
@@ -29,6 +45,8 @@ var injected = injected || (function(){
 
 	*/
 	function withCurrTime(callback){
+		callback(getCurrTime());
+		return;
 		document.removeEventListener("currTime");
 		document.addEventListener("currTime",function(e){
 			console.log("Curr time is " + e.detail);
@@ -150,41 +168,45 @@ var injected = injected || (function(){
 	}
 
 	function startDisplay(comments){
-		
+		canceled = false;
 		//display all comments from 1 sec ago and now
 		withCurrTime(function(currTime){
 			displayComments(comments.filter(function(i){
 				return ((currTime-1)< i.time ) && (i.time <= currTime); 
 			}));
 			
-		})
+		});
 		//continuously display new comments in an interval 
-
-		return setInterval(function(){
+		(function displayAllInTick(){
 			withCurrTime(function(currTime){
-				console.log(comments.filter(function(i){
+				displayComments(comments.filter(function(i){
 					return ((currTime-tick) < i.time) && (i.time <= currTime);
 				}));
-			})
-		},tick*1000);
+				if(!canceled){
+					setTimeout(displayAllInTick,tick*1000);
+				}
+			});
+			
+		})();
 	}
+
 	function clearDisplay(){
 		//clear all comments
 		$(".floating-comment").remove();
 	}
 	function pauseDisplay(){
-
+		canceled = true;
 	}
 	
-	var id = startDisplay([{
-			   time:6,
+	startDisplay([{
+			   time:18,
                text:"Hello WOrld!!!",
                animation:"fade-in"
        },{
-               time:2,
+               time:10,
                text:"yo yo yo",
                animation:"floating-right"
        }]); 
-	setTimeout(function(){clearInterval(id);},10000);
+	setTimeout(pauseDisplay,18000);
 	return true;
 }());
