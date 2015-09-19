@@ -47,8 +47,8 @@
 		chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 			switch(request){
 				case 'stop_display': 
-				console.log("hello");
-				displayer.turnOff();
+					console.log("hello");
+					displayer.turnOff();
 			}
 		});
 	};
@@ -102,6 +102,9 @@
 			that.displayHandle = setInterval(function(){
 				withCurrTime(function(currTime){
 					// console.log(video.comments);
+					if(that.canceled){
+						return;
+					}
 					that.displayComments(
 						_.filter(video.comments,function(i){
 						return ((currTime-tick) < i.time) && (i.time <= currTime);
@@ -115,6 +118,7 @@
 		};
 
 		this.turnOff = function turnOff() {
+			console.log("turned off");
 			that.clearDisplay();
 			that.pauseDisplay();
 		};
@@ -125,6 +129,8 @@
 		};
 
 		this.pauseDisplay = function pauseDisplay(){
+			console.log(that.displayHandle);
+			that.canceled = true;
 			clearInterval(that.displayHandle);
 		};
 
