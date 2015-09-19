@@ -1,0 +1,48 @@
+.topBar {
+	padding: 0px 0px;
+	height: 40px;
+	width: 100%;
+	background-color: white;
+	border-bottom: 1px solid $color_border_lighter;
+	form {
+		height: 100%;
+	}
+	input.search {
+		font-size: $h4;
+		outline: 0;
+		width: 200px;
+		padding:0;
+		height: 100%;
+	}
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: stretch;
+	align-items: stretch;
+	.logo {
+		width: 100px;
+		height: 40px;
+	}
+	button.clear {
+		height: auto;
+		width: 100px;
+		height: 100%;
+	}
+	.section, .spacer {
+		order: 0;
+		position: relative;
+		height: 100%;
+		align-self: auto;
+		border-right: 1px solid $color_border_lighter;
+		&:last-child {
+			border-right: none;
+		}
+	}
+	.section{
+		flex: 0 1 auto;
+	}
+	.spacer {
+		flex: 1 1 auto;
+	}
+}

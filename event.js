@@ -8,31 +8,18 @@ var tabWithFrameworks = {};
 function injectedMethod(tab,method,callback){
 
 	if(!tabWithFrameworks[tab.id]){
-		chrome.tabs.executeScript(tab.id,{
-			file:"jquery.js"
-		});
+		// chrome.tabs.executeScript(tab.id,{
+		// 	file:"jquery.js"
+		// });
 
-		chrome.tabs.executeScript(tab.id,{
-			file:"firebase.js"
-		});
-		
-		chrome.tabs.executeScript(tab.id,{
-			file:"lodash.js"
-		});
-		
-
-		chrome.tabs.insertCSS(tab.id,{
-			file:"bootstrap.css"
-		});
-		chrome.tabs.insertCSS(tab.id,{
-			file:"style.css"
-		});
+		// chrome.tabs.insertCSS(tab.id,{
+		// 	file:"bootstrap.css"
+		// });
 
 		tabWithFrameworks[tab.id] = true;
 	}
 	chrome.tabs.executeScript(tab.id,{
-		file:"inject.js"
-	},callback);	
-	// callback({data:"hello"});
+		file:"build/main.js"
+	}, callback);
 }
 chrome.browserAction.onClicked.addListener(getBgColors);
