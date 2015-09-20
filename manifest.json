@@ -24,6 +24,5 @@
   "permissions": [
     "<all_urls>"
     // "activeTab"
-  ]
-
+  ],
 }
