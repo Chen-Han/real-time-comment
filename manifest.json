@@ -10,19 +10,12 @@
     // "default_popup": "popup.html",
     "default_title":"my example"
   },
-  "background":{
-      "scripts":["event.js"],
-      "persistent":false
-    },
-"content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
   "web_accessible_resources": ["assets/emojis/*","pics/*.png"],
-  // "content_scripts":[{
-  //     "matches":["*"],
-  //     "css":["style.css"],
-  //     "js":["test.js"]
-  //   }],
-  "permissions": [
-    "<all_urls>"
-    // "activeTab"
-  ],
+  "permissions": ["tabs", "http://*/*"],
+  "content_scripts" : [{
+    "matches" : ["*://www.youtube.com/*"],
+    "css": ["style.css"],
+    "js" : ["lib/jquery.js", "lib/firebase.js", "lib/lodash.js", "inject.js"]
+  }]
 }
