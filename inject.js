@@ -200,7 +200,7 @@
 						($(".html5-video-container")).before(node);
 						setTimeout(function(){
 							node.remove();
-						},5000);
+						}, 30000);
 					})(asNode(comment));
 				});
 		};

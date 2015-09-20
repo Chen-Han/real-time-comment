@@ -32,7 +32,7 @@
 }
 
 .floating-comment.float-to-right-end{
-	animation: float-to-right-end 5s linear;
+	animation: float-to-right-end 20s linear;
 }
 
 .text-comments {
@@ -73,6 +73,6 @@
 
 	}
 	to{
-		left:105%;
+		left:400%;
 	}
 }
