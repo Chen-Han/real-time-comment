@@ -5,14 +5,14 @@ function run(tab){
 	console.log(toggle);
 	toggle = !toggle;
 	if(toggle){
-	chrome.browserAction.setIcon({path: "on.png", tabId:tab.id});
-	// console.log('injected firebase and libs');
-	injectedMethod(tab,'getPlayerTime');
+		chrome.browserAction.setIcon({path: "on.png", tabId:tab.id});
+		// console.log('injected firebase and libs');
+		injectedMethod(tab,'getPlayerTime');
 	}
 	else{
-	chrome.browserAction.setIcon({path: "off.png", tabId:tab.id});
-	chrome.tabs.sendMessage(tab.id, "stop_display");
-	// chrome.tabs.executeScript(tab.id, {code:"alert()"});
+		chrome.browserAction.setIcon({path: "off.png", tabId:tab.id});
+		chrome.tabs.sendMessage(tab.id, "stop_display");
+		// chrome.tabs.executeScript(tab.id, {code:"alert()"});
 	}
 		// alert("the browser action was clicked!");
 }

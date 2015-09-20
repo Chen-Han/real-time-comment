@@ -51,6 +51,7 @@
 					var e = document.getElementById("commentBox");
 					console.log(e);
 					e.parentNode.removeChild(e);
+					ref.unauth();
 					displayer.turnOff();
 			}
 		});
