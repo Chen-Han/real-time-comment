@@ -7,10 +7,38 @@
 
 (function(){
 
+// (function Loop(){
+// 	$(window).bind('hashchange', function() {
+// 		$(window).off('hashchange');
+// 	 	setTimeout(function(){
+// 	 		main();
+// 	 		Loop();
+// 	 	},500)
+// 	});	
+// })();
+
+
+
+var prevLoc = ""; 
+setInterval(function(){
+	var nowLoc = document.location.href;
+	console.log("hi");
+	if(nowLoc!==prevLoc){
+		main();
+	}
+	prevLoc = nowLoc;
+},1000);
+
+main();
+
+function main(){
+
+	if(!getVideoId()) return;
 
 	var realVideo = {
 		comments:[]
 	};
+
 
 
 	var ref = new Firebase("https://real-time-comment.firebaseio.com/").child(getVideoId());
@@ -44,7 +72,7 @@
 
 	function renderUI(videoCommentRef){
 		var section = $('<form id="commentBox"> <div class="pic-comments"> </div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button type="submit" class="btn btn-success submit" id="submitComments">comment</button> </div> </div> </form>');
-		var images = ["rage_dont_care",
+				var images = ["rage_dont_care",
 "rage_laugh_bite_mouth",
 "rage_surprise",
 "rage_troll",
@@ -255,10 +283,7 @@
 	    return parseFloat(document.body.getAttribute("playTime"));
 	}
 
-	function getVideoId(){
-		return /www.youtube.com\/watch\?v=(.+)/
-		.exec(window.location.href)[1];
-	}
+
 
 
 	function getEmojiSrc(emojiType){
@@ -270,6 +295,20 @@
 
 		}
 	}
+
+
+	function getVideoId(){
+		 var v = /watch\?v=(.+)/
+		.exec(window.location.href);
+		if(!v)return false;
+		var queryString = v[1];
+
+		return queryString.replace(/\/\[\]\.\$/,"");
+	}
+}
+
+
+
 }());
 
 
