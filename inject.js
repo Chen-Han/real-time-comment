@@ -46,30 +46,37 @@
 	function respondToOffToggle() {
 		chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 			switch(request){
-				case 'stop_display': 
-					console.log("hello");
+				case "stop_display": 
+					console.log("hello inject.js better work!");
+					var e = document.getElementById("commentBox");
+					console.log(e);
+					e.parentNode.removeChild(e);
 					displayer.turnOff();
 			}
 		});
-	};
+	};''
 	function renderUI(videoCommentRef){
-		var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
-		$("#watch7-headline").before(section);
+		var commentBox = document.getElementById("commentBox");
+		console.log(commentBox);
+		if(!commentBox){
+			var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
+			$("#watch7-headline").before(section);
 
-		$("#submitComments").on('click',function(){
-		  var textComment = $("#textComments").val();
-		  $("#textComments").val('');
-		  withCurrTime(function(currTime){
-		    console.log(videoCommentRef);
-		    videoCommentRef.push({
-		      time:currTime,
-		      text:textComment,
-		      animation:"float-to-right-end"
-		    },function(err){
-		      console.log(err);
-		    });
-		  });
-		})
+			$("#submitComments").on('click',function(){
+			  var textComment = $("#textComments").val();
+			  $("#textComments").val('');
+			  withCurrTime(function(currTime){
+			    console.log(videoCommentRef);
+			    videoCommentRef.push({
+			      time:currTime,
+			      text:textComment,
+			      animation:"float-to-right-end"
+			    },function(err){
+			      console.log(err);
+			    });
+			  });
+			})
+		}
 	}
 
 	function Displayer(tick){

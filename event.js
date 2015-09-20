@@ -2,18 +2,18 @@ var toggle = false;
 function run(tab){
 	// alert("clicked");
 	// var toggle = false;
-	chrome.browserAction.onClicked.addListener(function(tab) {
-	  toggle = !toggle;
-	  if(toggle){
-	    chrome.browserAction.setIcon({path: "on.png", tabId:tab.id});
-	    injectedMethod(tab,'getPlayerTime');
-	  }
-	  else{
-	    chrome.browserAction.setIcon({path: "off.png", tabId:tab.id});
-	    chrome.tabs.sendMessage(tab.id, 'stop_display')
-	    chrome.tabs.executeScript(tab.id, {code:"alert()"});
-	  }
-	});
+	console.log(toggle);
+	toggle = !toggle;
+	if(toggle){
+	chrome.browserAction.setIcon({path: "on.png", tabId:tab.id});
+	// console.log('injected firebase and libs');
+	injectedMethod(tab,'getPlayerTime');
+	}
+	else{
+	chrome.browserAction.setIcon({path: "off.png", tabId:tab.id});
+	chrome.tabs.sendMessage(tab.id, "stop_display");
+	// chrome.tabs.executeScript(tab.id, {code:"alert()"});
+	}
 		// alert("the browser action was clicked!");
 }
 var tabWithFrameworks = {};
@@ -42,6 +42,7 @@ function injectedMethod(tab,method,callback){
 		});
 
 		tabWithFrameworks[tab.id] = true;
+		console.log('Injected SHIT!!!');
 	}
 	chrome.tabs.executeScript(tab.id,{
 		file:"inject.js"
