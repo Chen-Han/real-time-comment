@@ -6,13 +6,6 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var comments = {};
 
-function getVideoId(){
-	return /www.youtube.com\/watch\?v=(.+)/
-	.exec(window.location.href)[1];
-}
-
-var ref = new Firebase("https://real-time-comment.firebaseio.com/").child(getVideoId());
-
 var Comments = React.createClass({
 	getInitialState: function () {
 		return {currentTime: getCurrentTime()};
@@ -20,16 +13,6 @@ var Comments = React.createClass({
 	componentDidMount: function () {
 		this.interval = setInterval(this.tick, 500);
 		// Attach an asynchronous callback to read the data at our posts reference
-		ref.on("value", function (snapshot) {
-			if (!snapshot.val() || snapshot.val()===null) {
-				comments = {};
-			}
-			else {
-				comments = snapshot.val();
-			}
-		}, function (errorObject) {
-			console.log("The read failed: " + errorObject.code);
-		});
 	},
 	componentWillUnmount: function() {
 		clearInterval(this.interval);

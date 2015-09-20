@@ -3,7 +3,7 @@ module.exports = [
 		// commonsChunk: true,
 		longTermCaching: true,
 		separateStylesheet: true,
-		minimize: false,
+		minimize: true,
 		devtool: "source-map"
 	})
 ];

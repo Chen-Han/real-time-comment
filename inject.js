@@ -80,6 +80,57 @@
 			time:25
 		}]
 	}); 
+	window.renderRealtimeReactComponents([{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:1.1
+		},{
+			type:"text",
+			content:"stufffff",
+			animation:"float-to-right-end",
+			time:6
+		},{
+			type:"text",
+			content:"looooll ",
+			animation:"float-to-right-end",
+			time:10
+		},{
+			type:"text",
+			content:"lool some comment man !!",
+			animation:"float-to-right-end",
+			time:10
+		},{
+			type:"emoji",
+			content:"emo_cry",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"emoji",
+			content:"rage_dont_care",
+			animation:"float-to-right-end",
+			time:1
+		},{
+			type:"emoji",
+			content:"emo_laugh_tear",
+			animation:"float-to-right-end",
+			time:7
+		},{
+			type:"emoji",
+			content:"emo_cry",
+			animation:"float-to-right-end",
+			time:17
+		},{
+			type:"emoji",
+			content:"rage_wat",
+			animation:"float-to-right-end",
+			time:25
+		}]);
 	
 	setTimeout(displayer.pauseDisplay,90000);
 
