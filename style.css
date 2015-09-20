@@ -1,12 +1,16 @@
 #commentBox{
+
   border-radius: 7px;
   background-color: #FFFFCC;
+  border:1px solid #eeeebb;
   padding-top: 10px;
-  padding-bottom: 25px;
-  width: 650px;
+  width: 100%;
   margin-bottom: 15px;
-  height: 120px;
   
+}
+
+.pic-comments{
+
 }
 
 .form-control{
@@ -15,33 +19,39 @@
   box-shadow: none;
 }
 
-.text-comments{
-  background-color: #FFFFCC;
-  border-color: #FFFFCC;
-  box-shadow: none;
+div.text-comments{
+	height:30px;
+	padding-top:5px;
+	padding-bottom: 5px;
+	background-color: #FFFFCC;
+	border-top:1px solid #eeeebb;
+	box-shadow: none;
 }
 
-input{
+input#textComments{
   float: left;
-  width: 490px;
+  /*width: 490px;*/
+  width:70%;
+  margin-left:10px;
   display: inline-block;
-  height: 40px;
-  font-size: 40px;
-  margin-left: 20px;
+	height:100%;
+	color:#444;
 }
 
 
 #submitComments{
   display: inline-block;
-  width: 90px;
-  height: 40px;
+  /*width: 90px;*/
+  /*height: 40px;*/
   float: left;
-  margin-left: 15px;
+  margin-left: 5px;
   background-color: #00A300;
   color: white;
   letter-spacing: 1px;
   font-weight: 800;
   font-size: 15px;
+  padding:5px;
+	height:100%;
 }
 
 .floating-comment.emoji-comment{
@@ -128,4 +138,9 @@ input{
 	height:50px;
 	display:inline-block;
 	max-resolution: res;gin:3px;
+}
+
+.comment-emojis.rage{
+	width:80px;
+	height:80px;
 }
