@@ -27,59 +27,7 @@
 
 	var displayer = new Displayer();
 
-	displayer.startDisplay({
-		comments:[{
-			type:"text",
-			content:"stufffff",
-			animation:"float-to-right-end",
-			time:1
-		},{
-			type:"text",
-			content:"stufffff",
-			animation:"float-to-right-end",
-			time:1.1
-		},{
-			type:"text",
-			content:"stufffff",
-			animation:"float-to-right-end",
-			time:6
-		},{
-			type:"text",
-			content:"looooll ",
-			animation:"float-to-right-end",
-			time:10
-		},{
-			type:"text",
-			content:"lool some comment man !!",
-			animation:"float-to-right-end",
-			time:10
-		},{
-			type:"emoji",
-			content:"emo_cry",
-			animation:"float-to-right-end",
-			time:1
-		},{
-			type:"emoji",
-			content:"rage_dont_care",
-			animation:"float-to-right-end",
-			time:1
-		},{
-			type:"emoji",
-			content:"emo_laugh_tear",
-			animation:"float-to-right-end",
-			time:7
-		},{
-			type:"emoji",
-			content:"emo_cry",
-			animation:"float-to-right-end",
-			time:17
-		},{
-			type:"emoji",
-			content:"rage_wat",
-			animation:"float-to-right-end",
-			time:25
-		}]
-	}); 
+	displayer.startDisplay(realVideo); 
 	
 	setTimeout(displayer.pauseDisplay,90000);
 
@@ -95,26 +43,38 @@
 
 
 	function renderUI(videoCommentRef){
-		var section = $('<section id="commentBox"> <div class="pic-comments"><a id="cool"><img id="cool_pic"></a></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div></div> </section>');
-    $("#cool_pic").attr("src", chrome.extension.getURL("pics/cool.png"));
- 
-		$("#watch7-headline").before(section);
-		
- 		$("#cool").on('click',function(){
- 		   withCurrTime(function(currTime){
- 		    console.log(videoCommentRef);
- 		    videoCommentRef.push({
- 		      type:"emoji",
- 		      time:currTime,
- 		      content:"cool",
- 		      animation:"float-to-right-end"
- 		    },function(err){
- 		      console.log(err);
- 		    });
- 		  });
- 		})
+		var section = $('<form id="commentBox"> <div class="pic-comments"> </div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button type="submit" class="btn btn-success submit" id="submitComments">comment</button> </div> </div> </form>');
+		var images = ["rage_dont_care",
+"rage_laugh_bite_mouth",
+"rage_surprise",
+"rage_troll",
+"rage_wat","emo_cry",
+"emo_laugh_tear",
+"emo_poker_face",
+"emo_sleep",
+"emo_tonge_out"
+];
 
-		$("#submitComments").on('click',function(){
+		var imgs = images.map(function(img){
+			return (function(img){
+				var node = $("<img>",{src:getEmojiSrc(img),class:"comment-emojis"});
+			node.on('click',function(){
+				videoCommentRef.push({
+					content:img,
+					type:"emoji",
+					time:getCurrTime() + 0.5,
+					animation:"float-to-right-end"
+				});
+			});
+			return node;}) (img)
+		});
+
+
+
+    	section.find(".pic-comments").append(imgs);
+		$("#watch7-headline").before(section);
+		$("#commentBox").on('submit',function(e){
+			e.preventDefault();
 		  var textComment = $("#textComments").val();
 		  $("#textComments").val('');
 		  withCurrTime(function(currTime){
@@ -158,7 +118,6 @@
 			});
 			//continuously display new comments in an interval 
 			(function displayAllInTick(){
-
 				withCurrTime(function(currTime){
 					// console.log(video.comments);
 					that.displayComments(
@@ -169,7 +128,6 @@
 						setTimeout(displayAllInTick,tick*1000);
 					}
 				});
-				
 			})();
 		};
 
@@ -197,6 +155,7 @@
 		this.displayComments = function displayComments(comments,currTime){
 				comments.forEach(function(comment,index){
 					(function (node){
+						console.log(node);
 						($(".html5-video-container")).before(node);
 						setTimeout(function(){
 							node.remove();
@@ -221,20 +180,13 @@
 						.css(getStylePos(comment));
 
 				case "text":
-					return $("<div>",{
+				default:
+					return 
+					$("<div>",{
 						text:comment.content,
 						class:"floating-comment " + getStyleAnimation(comment)
-					}).css(getStylePos(comment));
-			}
-			
-			function getEmojiSrc(emojiType){
-				if(/^rage_/.test(emojiType)){
-					return chrome.extension.getURL("assets/emojis/rage/" + emojiType + (".png"));
-
-				}else{
-					return chrome.extension.getURL("assets/emojis/emo/" + emojiType + (".jpg"));
-
-				}
+					})
+					.css(getStylePos(comment));
 			}
 
 			function getStyleAnimation(comment,currTime){
@@ -272,27 +224,38 @@
 	function withCurrTime(callback){
 		callback(getCurrTime());
 
-		function getCurrTime(variables) {
-		    var ret = {};
-
-		    var scriptContent =
-		        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
-
-		    var script = document.createElement('script');
-		    script.id = 'tmpScript';
-		    script.appendChild(document.createTextNode(scriptContent));
-		    (document.body || document.head || document.documentElement).appendChild(script);
-
-		    $("#tmpScript").remove();
-
-		    return parseFloat(document.body.getAttribute("playTime"));
-		}
+		
 	}
+	function getCurrTime(variables) {
+	    var ret = {};
 
+	    var scriptContent =
+	        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
+
+	    var script = document.createElement('script');
+	    script.id = 'tmpScript';
+	    script.appendChild(document.createTextNode(scriptContent));
+	    (document.body || document.head || document.documentElement).appendChild(script);
+
+	    $("#tmpScript").remove();
+
+	    return parseFloat(document.body.getAttribute("playTime"));
+	}
 
 	function getVideoId(){
 		return /www.youtube.com\/watch\?v=(.+)/
 		.exec(window.location.href)[1];
+	}
+
+
+	function getEmojiSrc(emojiType){
+		if(/^rage_/.test(emojiType)){
+			return chrome.extension.getURL("assets/emojis/rage/" + emojiType + (".png"));
+
+		}else{
+			return chrome.extension.getURL("assets/emojis/emo/" + emojiType + (".jpg"));
+
+		}
 	}
 }());
 
