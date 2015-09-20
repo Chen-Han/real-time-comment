@@ -52,7 +52,8 @@
 "emo_laugh_tear",
 "emo_poker_face",
 "emo_sleep",
-"emo_tonge_out"
+"emo_tonge_out",
+"emo_poo"
 ];
 
 		var imgs = images.map(function(img){
