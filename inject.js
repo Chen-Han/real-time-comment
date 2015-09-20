@@ -75,8 +75,7 @@
 		$("#watch7-headline").before(section);
 		$("#commentBox").on('submit',function(e){
 			e.preventDefault();
-		  var textComment = $("#textComments").val();
-		  $("#textComments").val('');
+		  var textComment = $("#textComments").val() || "default comment !!!!!!";
 		  withCurrTime(function(currTime){
 		    console.log(videoCommentRef);
 		    videoCommentRef.push({
@@ -85,9 +84,14 @@
 		      content:textComment,
 		      animation:"float-to-right-end"
 		    },function(err){
-		      console.log(err);
+		      if(err)console.log(err);
+		      else {
+				  $("#textComments").val('');
+
+		      }
 		    });
 		  });
+
 		})
 	}
 
@@ -155,11 +159,13 @@
 		this.displayComments = function displayComments(comments,currTime){
 				comments.forEach(function(comment,index){
 					(function (node){
-						console.log(node);
-						($(".html5-video-container")).before(node);
+						if(!node)console.log(comment);
+						// $("#movie_player")
+						$(".html5-video-container")
+						.before(node);
 						setTimeout(function(){
 							node.remove();
-						}, 30000);
+						}, 5000);
 					})(asNode(comment));
 				});
 		};
@@ -180,13 +186,19 @@
 						.css(getStylePos(comment));
 
 				case "text":
-				default:
-					return 
+					var node = 
 					$("<div>",{
 						text:comment.content,
 						class:"floating-comment " + getStyleAnimation(comment)
 					})
 					.css(getStylePos(comment));
+
+					if(!node){
+						console.log(comment);
+						console.log(getStylePos(comment));
+						console.log(getStyleAnimation(comment));
+					}
+					return node;
 			}
 
 			function getStyleAnimation(comment,currTime){
