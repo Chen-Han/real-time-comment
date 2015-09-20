@@ -7,10 +7,38 @@
 
 (function(){
 
+// (function Loop(){
+// 	$(window).bind('hashchange', function() {
+// 		$(window).off('hashchange');
+// 	 	setTimeout(function(){
+// 	 		main();
+// 	 		Loop();
+// 	 	},500)
+// 	});	
+// })();
+
+
+
+var prevLoc = ""; 
+setInterval(function(){
+	var nowLoc = document.location.href;
+	console.log("hi");
+	if(nowLoc!==prevLoc){
+		main();
+	}
+	prevLoc = nowLoc;
+},1000);
+
+// main();
+
+function main(){
+
+	if(!getVideoId()) return;
 
 	var realVideo = {
 		comments:[]
 	};
+
 
 
 	var ref = new Firebase("https://real-time-comment.firebaseio.com/").child(getVideoId());
@@ -23,14 +51,13 @@
 	  console.log("The read failed: " + errorObject.code);
 	});
 
-
 	renderUI(ref);
 
 	var displayer = new Displayer();
 
 	displayer.startDisplay(realVideo); 
 	
-	setTimeout(displayer.pauseDisplay,90000);
+	// setTimeout(displayer.pauseDisplay,90000);
 
 	// function respondToMessages(){
 	// 	chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
@@ -60,22 +87,56 @@
 		var commentBox = document.getElementById("commentBox");
 		console.log(commentBox);
 		if(!commentBox){
-			var section = $('<section id="commentBox"> <div class="pic-comments"></div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button class="btn btn-success submit" id="submitComments">comment</button> </div>      </div> </section>'); 
-			$("#watch7-headline").before(section);
+			var section = $('<form id="commentBox"> <div class="pic-comments"> </div> <div class="text-comments"> <div class="form-control"> <input type="text" placeholder="type here" id="textComments"> <button type="submit" class="btn btn-success submit" id="submitComments">comment</button> </div> </div> </form>');
+					var images = ["rage_dont_care",
+	"rage_laugh_bite_mouth",
+	"rage_surprise",
+	"rage_troll",
+	"rage_wat","emo_cry",
+	"emo_laugh_tear",
+	"emo_poker_face",
+	"emo_sleep",
+	"emo_tonge_out",
+	"emo_poo"
+	];
 
-			$("#submitComments").on('click',function(){
-			  var textComment = $("#textComments").val();
-			  $("#textComments").val('');
+			var imgs = images.map(function(img){
+				return (function(img){
+					var node = $("<img>",{src:getEmojiSrc(img),class:"comment-emojis"});
+				node.on('click',function(){
+					videoCommentRef.push({
+						content:img,
+						type:"emoji",
+						time:getCurrTime() + 0.5,
+						animation:"float-to-right-end"
+					});
+				});
+				return node;}) (img)
+			});
+
+
+
+	    	section.find(".pic-comments").append(imgs);
+			$("#watch7-headline").before(section);
+			$("#commentBox").on('submit',function(e){
+				e.preventDefault();
+			  var textComment = $("#textComments").val() || "default comment !!!!!!";
 			  withCurrTime(function(currTime){
 			    console.log(videoCommentRef);
 			    videoCommentRef.push({
+			      type:"text",
 			      time:currTime,
-			      text:textComment,
+			      content:textComment,
 			      animation:"float-to-right-end"
 			    },function(err){
-			      console.log(err);
+			      if(err)console.log(err);
+			      else {
+					  $("#textComments").val('');
+
+			      }
 			    });
 			  });
+
 			})
 		}
 	}
@@ -103,6 +164,7 @@
 				that.displayComments(_.filter(video.comments,function(i){
 					return ((currTime-secAgo)< i.time ) && (i.time <= currTime); 
 				}));
+
 				
 			});
 
@@ -122,6 +184,7 @@
 					// 	setTimeout(displayAllInTick,tick*1000);
 					// }
 				});
+
 			},tick*1000);
 		};
 
@@ -157,10 +220,13 @@
 		this.displayComments = function displayComments(comments,currTime){
 				comments.forEach(function(comment,index){
 					(function (node){
-						($(".html5-video-container")).before(node);
+						if(!node)console.log(comment);
+						// $("#movie_player")
+						$(".html5-video-container")
+						.before(node);
 						setTimeout(function(){
 							node.remove();
-						},5000);
+						}, 5000);
 					})(asNode(comment));
 				});
 		};
@@ -172,11 +238,29 @@
 		@return a node to be added corresponding to each comment
 		*/
 		function asNode(comment,currTime){
+			switch(comment.type){
+				case "emoji":
+					return $("<img>",{
+						src:getEmojiSrc(comment.content),
+						class:"floating-comment emoji-comment float-to-right-end"
+					})
+						.css(getStylePos(comment));
 
-			return $("<div>",{
-				text:comment.text,
-				class:"floating-comment " + getStyleAnimation(comment)
-			}).css(getStylePos(comment));
+				case "text":
+					var node = 
+					$("<div>",{
+						text:comment.content,
+						class:"floating-comment " + getStyleAnimation(comment)
+					})
+					.css(getStylePos(comment));
+
+					if(!node){
+						console.log(comment);
+						console.log(getStylePos(comment));
+						console.log(getStyleAnimation(comment));
+					}
+					return node;
+			}
 
 			function getStyleAnimation(comment,currTime){
 				return comment.animation || "";
@@ -213,27 +297,49 @@
 	function withCurrTime(callback){
 		callback(getCurrTime());
 
-		function getCurrTime(variables) {
-		    var ret = {};
+		
+	}
+	function getCurrTime(variables) {
+	    var ret = {};
 
-		    var scriptContent =
-		        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
+	    var scriptContent =
+	        "document.body.setAttribute('playTime',yt.player.getPlayerByElement(document.getElementById('player-api')).getCurrentTime())"
 
-		    var script = document.createElement('script');
-		    script.id = 'tmpScript';
-		    script.appendChild(document.createTextNode(scriptContent));
-		    (document.body || document.head || document.documentElement).appendChild(script);
+	    var script = document.createElement('script');
+	    script.id = 'tmpScript';
+	    script.appendChild(document.createTextNode(scriptContent));
+	    (document.body || document.head || document.documentElement).appendChild(script);
 
-		    $("#tmpScript").remove();
+	    $("#tmpScript").remove();
 
-		    return parseFloat(document.body.getAttribute("playTime"));
+	    return parseFloat(document.body.getAttribute("playTime"));
+	}
+
+
+
+
+	function getEmojiSrc(emojiType){
+		if(/^rage_/.test(emojiType)){
+			return chrome.extension.getURL("assets/emojis/rage/" + emojiType + (".png"));
+
+		}else{
+			return chrome.extension.getURL("assets/emojis/emo/" + emojiType + (".jpg"));
+
 		}
 	}
 
 	function getVideoId(){
-		return /www.youtube.com\/watch\?v=(.+)/
-		.exec(window.location.href)[1];
+		 var v = /watch\?v=(.+)/
+		.exec(window.location.href);
+		if(!v)return false;
+		var queryString = v[1];
+
+		return queryString.replace(/\/\[\]\.\$/,"");
 	}
+}
+
+
+
 }());
 
 

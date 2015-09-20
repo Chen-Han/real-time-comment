@@ -1,14 +1,65 @@
-.floating-comment{
-	position:absolute;
-	z-index: 11;
-	display:inline-block !important;
-	text-overflow:cut;
-	white-space: nowrap;
+#commentBox{
+  border-radius: 7px;
+  background-color: #FFFFCC;
+  padding-top: 10px;
+  padding-bottom: 25px;
+  width: 650px;
+  margin-bottom: 15px;
+  height: 120px;
+  
+}
+
+.form-control{
+  background-color: #FFFFCC;
+  border-color: #FFFFCC;
+  box-shadow: none;
+}
+
+.text-comments{
+  background-color: #FFFFCC;
+  border-color: #FFFFCC;
+  box-shadow: none;
+}
+
+input{
+  float: left;
+  width: 490px;
+  display: inline-block;
+  height: 40px;
+  font-size: 40px;
+  margin-left: 20px;
+}
+
+
+#submitComments{
+  display: inline-block;
+  width: 90px;
+  height: 40px;
+  float: left;
+  margin-left: 15px;
+  background-color: #00A300;
+  color: white;
+  letter-spacing: 1px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.floating-comment.emoji-comment{
+	width:40px;
+	height:40px;
+	background-color: transparent;
 }
 
 #player_api{
 	position:relative;
 	overflow: hidden;
+}
+
+.floating-comment {
+    color: #FFFFFF;
+    font-family: "Courier New";
+    font-weight: 900;
+    font-size: 30px;
 }
 
 .floating-comment.fade-in{
@@ -19,7 +70,11 @@
 }
 
 .floating-comment.float-to-right-end{
-	animation: float-to-right-end 5s linear;
+	animation: float-to-right-end 20s linear;
+}
+
+.text-comments {
+  background-color: clear;
 }
 
 .floating-comment.float-to-left-end{
@@ -60,16 +115,20 @@
 
 	}
 	to{
-		left:105%;
+		left:400%;
 	}
 }
 
-@keyframes float-to-left-end{
-	from{
-		left:105%;
 
-	}
-	to{
-		left:0%;
-	}
+
+/*Commet box logic*/
+.pic-comments{
+	padding:15px;
+}
+
+.comment-emojis{
+	width:50px;
+	height:50px;
+	display:inline-block;
+	max-resolution: res;gin:3px;
 }
