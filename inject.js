@@ -29,7 +29,7 @@ setInterval(function(){
 	prevLoc = nowLoc;
 },1000);
 
-main();
+// main();
 
 function main(){
 
@@ -57,7 +57,7 @@ function main(){
 
 	displayer.startDisplay(realVideo); 
 	
-	setTimeout(displayer.pauseDisplay,90000);
+	// setTimeout(displayer.pauseDisplay,90000);
 
 	// function respondToMessages(){
 	// 	chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
